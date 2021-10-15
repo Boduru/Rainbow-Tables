@@ -8,14 +8,14 @@ def attack(h):
 
     # List of all ending password (last column of rainbow table)
     ends = [e[1] for e in table]
-
-    for j in range(HIT_NUMBER - 1, 0, -1):
+    
+    for j in range(HIT_NUMBER - 1, -1, -1):
         pwd = generate_pwd(h, HIT_NUMBER - 1, j)
 
         if pwd in ends:
             # sub-list index
             c = ends.index(pwd)
-
+            
             return get_pwd(c, j)
 
     return None
@@ -34,13 +34,13 @@ def get_pwd(chain, pos):
     """Get the password using chain and position index"""
 
     # get the very first element (password of chain)
-    s = table[chain][0]
+    p = table[chain][0]
 
     for i in range(pos):
-        s = H(s)
-        s = R(s, i)
+        h = H(p)
+        p = R(h, i)
 
-    return s
+    return p
 
 
 def load(filename):
@@ -54,7 +54,7 @@ if __name__ == "__main__":
     table = load("table.rainbow")
 
     # hash to crack
-    h = "cfc7a405c11e417cb73d9b18b224adc4"
+    h = "01716c20793b54b07576cb3014a5f4ee"
     
     pwd = attack(h)
 
