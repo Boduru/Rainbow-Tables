@@ -1,18 +1,20 @@
 import hashlib, binascii
 import json
+import random
 
 
 # __GLOBALS__
-SPACE = "01234"     # all the disponible characters for password
-MAX_PWD_LEN = 3     # max length of a password
-HIT_NUMBER = 5      # number of iterations to create a chain
+SPACE = "123456"     # all the disponible characters for password
+MAX_PWD_LEN = 6    # max length of a password
+HIT_NUMBER = 10      # number of iterations to create a chain
+CHAIN_NUMBER = 2
 
 
 def H(plaintext):
     """NTLM hash"""
 
     hash = hashlib.new('md4', plaintext.encode('utf-16le')).digest()
-
+    
     return binascii.hexlify(hash).decode("utf-8")
 
 
@@ -25,7 +27,7 @@ def R(h, i):
     # iterate through len(space) times
     while len(pwd) < MAX_PWD_LEN:
         pwd += SPACE[(h + i) % len(SPACE)]
-        i = i // len(SPACE)
+        h = h // len(SPACE)
 
     return pwd
 
@@ -33,15 +35,15 @@ def R(h, i):
 def chain(start):
     """Generate the chain"""
 
-    gen = start
+    p = start
 
     # starting from 0 to HIT_NUMBER - 1
-    for i in range(HIT_NUMBER):
+    for i in range(0, HIT_NUMBER):
         # Hash then reduce
-        gen = H(gen)
-        gen = R(gen, i)
+        h = H(p)
+        p = R(h, i)
 
-    return gen
+    return p
 
 
 def rainbow_table(pwds):
@@ -64,14 +66,9 @@ def kick_off():
     """Create starting passwords
     (beginning of each chain)"""
 
-    table = [
-        "100",
-        "111",
-        "222",
-        "444"
-    ]
+    # return ["".join(random.choices(SPACE, k=MAX_PWD_LEN)) for _ in range(CHAIN_NUMBER)]
 
-    return table
+    return ["111111"]
     
 
 def save(table, filename):
@@ -82,11 +79,7 @@ def save(table, filename):
 
 
 if __name__ == "__main__":
-    pwd = "411" # pwd to find
-    h = H(pwd) # hash of the pwd
-
-    print(h)
-
+    print(H("526633"))
     pwds = kick_off()
     table = rainbow_table(pwds)
 
