@@ -1,4 +1,4 @@
-# Rainbow-Tables
+# Rainbow Tables
 
 # General
 Rainbow tables implementation in Python using NTLM hashing function (Windows) for password cracking.
